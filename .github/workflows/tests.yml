@@ -1,0 +1,21 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        working-directory: ak820-driver
+        run: pip install -e . pytest
+      - name: Run the tests
+        working-directory: ak820-driver
+        run: python -m pytest -q

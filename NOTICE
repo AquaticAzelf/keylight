@@ -1,0 +1,32 @@
+# NOTICE
+
+Keylight is a third-party tool. It is not made by, or endorsed by, AJAZZ or
+by any other keyboard maker. "AK820" is used only to say which keyboard it
+works with.
+
+## Credits
+
+**The keyboard's protocol.** The command numbers, the layout of the board's
+configuration space and the way its lighting is stored were worked out from
+the EVision V2 driver in
+[OpenRGB](https://github.com/OpenRGB/OpenRGB) (the `EvisionV2KeyboardController`
+driver, GPL-2.0-or-later), and confirmed against the board itself. No code was
+copied from it; what was taken from it are facts about the hardware — which
+numbers mean what.
+
+**The key layout.** The places the eighty-two keys sit on the AK820, and what
+is written on them, are facts about the keyboard. They were measured once from
+a picture of the board and are kept in `ak820-driver/ui/assets/ak820-caps.json`.
+The picture itself is not used, and is not in this repository.
+
+**The look.** The app's visual language was modelled on ATK GEAR, the
+configuration app that comes with the VXE R1 mouse. That is a look, not a
+codebase; nothing was taken from it but measurements.
+
+**The fonts.** Segoe UI Variable, which is on every Windows 11 machine. No
+web fonts are downloaded.
+
+## The keyboard's maker
+
+The AK820 is made by 深圳市黑爵同创电子科技有限公司, and sold under the AJAZZ
+brand. This project is not connected with either of them.

@@ -1,0 +1,783 @@
+{
+ "id": "ak820_wired",
+ "name": "AK820 (wired, 75%)",
+ "vid": 12815,
+ "pid": 20571,
+ "usage_page": 65308,
+ "interface": 1,
+ "chain_size": 126,
+ "knob": {
+  "id": null,
+  "label": "Knob",
+  "kind": "knob",
+  "width": 55,
+  "x": 688.5,
+  "y": 12,
+  "row": 0,
+  "col": 14
+ },
+ "rows": [
+  {
+   "keys": [
+    {
+     "id": null,
+     "label": "Esc",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 0,
+     "chain": 0
+    },
+    {
+     "id": null,
+     "label": "F1",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 1,
+     "chain": 8
+    },
+    {
+     "id": null,
+     "label": "F2",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 2,
+     "chain": 16
+    },
+    {
+     "id": null,
+     "label": "F3",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 3,
+     "chain": 24
+    },
+    {
+     "id": null,
+     "label": "F4",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 4,
+     "chain": 32
+    },
+    {
+     "id": null,
+     "label": "F5",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 5,
+     "chain": 40
+    },
+    {
+     "id": null,
+     "label": "F6",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 6,
+     "chain": 48
+    },
+    {
+     "id": null,
+     "label": "F7",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 7,
+     "chain": 56
+    },
+    {
+     "id": null,
+     "label": "F8",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 8,
+     "chain": 64
+    },
+    {
+     "id": null,
+     "label": "F9",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 9,
+     "chain": 72
+    },
+    {
+     "id": null,
+     "label": "F10",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 10,
+     "chain": 80
+    },
+    {
+     "id": null,
+     "label": "F11",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 11,
+     "chain": 88
+    },
+    {
+     "id": null,
+     "label": "F12",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 12,
+     "chain": 96
+    },
+    {
+     "id": null,
+     "label": "Del",
+     "realLabel": null,
+     "width": 55,
+     "row": 0,
+     "col": 13,
+     "chain": 104
+    }
+   ]
+  },
+  {
+   "keys": [
+    {
+     "id": null,
+     "label": "~",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 0,
+     "chain": 1
+    },
+    {
+     "id": null,
+     "label": "1!",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 1,
+     "chain": 9
+    },
+    {
+     "id": null,
+     "label": "2@",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 2,
+     "chain": 17
+    },
+    {
+     "id": null,
+     "label": "3#",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 3,
+     "chain": 25
+    },
+    {
+     "id": null,
+     "label": "4$",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 4,
+     "chain": 33
+    },
+    {
+     "id": null,
+     "label": "5%",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 5,
+     "chain": 41
+    },
+    {
+     "id": null,
+     "label": "6^",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 6,
+     "chain": 49
+    },
+    {
+     "id": null,
+     "label": "7&",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 7,
+     "chain": 57
+    },
+    {
+     "id": null,
+     "label": "8*",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 8,
+     "chain": 65
+    },
+    {
+     "id": null,
+     "label": "9(",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 9,
+     "chain": 73
+    },
+    {
+     "id": null,
+     "label": "10)",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 10,
+     "chain": 81
+    },
+    {
+     "id": null,
+     "label": "-_",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 11,
+     "chain": 89
+    },
+    {
+     "id": null,
+     "label": "=+",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 12,
+     "chain": 97
+    },
+    {
+     "id": null,
+     "label": "Backspace",
+     "realLabel": null,
+     "width": 96,
+     "row": 1,
+     "col": 13,
+     "chain": 105
+    },
+    {
+     "id": null,
+     "label": "Home",
+     "realLabel": null,
+     "width": 55,
+     "row": 1,
+     "col": 14,
+     "chain": 121
+    }
+   ]
+  },
+  {
+   "keys": [
+    {
+     "id": null,
+     "label": "Tab",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 0,
+     "chain": 2
+    },
+    {
+     "id": null,
+     "label": "Q",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 1,
+     "chain": 10
+    },
+    {
+     "id": null,
+     "label": "W",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 2,
+     "chain": 18
+    },
+    {
+     "id": null,
+     "label": "E",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 3,
+     "chain": 26
+    },
+    {
+     "id": null,
+     "label": "R",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 4,
+     "chain": 34
+    },
+    {
+     "id": null,
+     "label": "T",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 5,
+     "chain": 42
+    },
+    {
+     "id": null,
+     "label": "Y",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 6,
+     "chain": 50
+    },
+    {
+     "id": null,
+     "label": "U",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 7,
+     "chain": 58
+    },
+    {
+     "id": null,
+     "label": "I",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 8,
+     "chain": 66
+    },
+    {
+     "id": null,
+     "label": "O",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 9,
+     "chain": 74
+    },
+    {
+     "id": null,
+     "label": "P",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 10,
+     "chain": 82
+    },
+    {
+     "id": null,
+     "label": "[{",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 11,
+     "chain": 90
+    },
+    {
+     "id": null,
+     "label": "]}",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 12,
+     "chain": 98
+    },
+    {
+     "id": null,
+     "label": "\\|",
+     "realLabel": null,
+     "width": 79,
+     "row": 2,
+     "col": 13,
+     "chain": 106
+    },
+    {
+     "id": null,
+     "label": "PgUp",
+     "realLabel": null,
+     "width": 55,
+     "row": 2,
+     "col": 14,
+     "chain": 122
+    }
+   ]
+  },
+  {
+   "keys": [
+    {
+     "id": null,
+     "label": "Caps",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 0,
+     "chain": 3
+    },
+    {
+     "id": null,
+     "label": "A",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 1,
+     "chain": 11
+    },
+    {
+     "id": null,
+     "label": "S",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 2,
+     "chain": 19
+    },
+    {
+     "id": null,
+     "label": "D",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 3,
+     "chain": 27
+    },
+    {
+     "id": null,
+     "label": "F",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 4,
+     "chain": 35
+    },
+    {
+     "id": null,
+     "label": "G",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 5,
+     "chain": 43
+    },
+    {
+     "id": null,
+     "label": "H",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 6,
+     "chain": 51
+    },
+    {
+     "id": null,
+     "label": "J",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 7,
+     "chain": 59
+    },
+    {
+     "id": null,
+     "label": "K",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 8,
+     "chain": 67
+    },
+    {
+     "id": null,
+     "label": "L",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 9,
+     "chain": 75
+    },
+    {
+     "id": null,
+     "label": ";:",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 10,
+     "chain": 83
+    },
+    {
+     "id": null,
+     "label": "'\"",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 11,
+     "chain": 91
+    },
+    {
+     "id": null,
+     "label": "Enter",
+     "realLabel": null,
+     "width": 115,
+     "row": 3,
+     "col": 12,
+     "chain": 107
+    },
+    {
+     "id": null,
+     "label": "PgDn",
+     "realLabel": null,
+     "width": 55,
+     "row": 3,
+     "col": 13,
+     "chain": 115
+    }
+   ]
+  },
+  {
+   "keys": [
+    {
+     "id": null,
+     "label": "Z",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 0,
+     "chain": 20
+    },
+    {
+     "id": null,
+     "label": "X",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 1,
+     "chain": 28
+    },
+    {
+     "id": null,
+     "label": "C",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 2,
+     "chain": 36
+    },
+    {
+     "id": null,
+     "label": "V",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 3,
+     "chain": 44
+    },
+    {
+     "id": null,
+     "label": "B",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 4,
+     "chain": 52
+    },
+    {
+     "id": null,
+     "label": "N",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 5,
+     "chain": 60
+    },
+    {
+     "id": null,
+     "label": "M",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 6,
+     "chain": 68
+    },
+    {
+     "id": null,
+     "label": ",<",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 7,
+     "chain": 76
+    },
+    {
+     "id": null,
+     "label": ">.",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 8,
+     "chain": 84
+    },
+    {
+     "id": null,
+     "label": "/?",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 9,
+     "chain": 92
+    },
+    {
+     "id": null,
+     "label": "Shift",
+     "realLabel": null,
+     "width": 110,
+     "row": 4,
+     "col": 10,
+     "chain": 4
+    },
+    {
+     "id": null,
+     "label": "Shift",
+     "realLabel": null,
+     "width": 105,
+     "row": 4,
+     "col": 11,
+     "chain": 108
+    },
+    {
+     "id": null,
+     "label": "↑",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 12,
+     "chain": 116
+    },
+    {
+     "id": null,
+     "label": "End",
+     "realLabel": null,
+     "width": 55,
+     "row": 4,
+     "col": 13,
+     "chain": 123
+    }
+   ]
+  },
+  {
+   "keys": [
+    {
+     "id": null,
+     "label": "Ctrl",
+     "realLabel": null,
+     "width": 67,
+     "row": 5,
+     "col": 0,
+     "chain": 5
+    },
+    {
+     "id": null,
+     "label": "Win",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 1,
+     "chain": 13
+    },
+    {
+     "id": null,
+     "label": "Alt",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 2,
+     "chain": 21
+    },
+    {
+     "id": null,
+     "label": "Spacebar",
+     "realLabel": null,
+     "width": 448,
+     "row": 5,
+     "col": 3,
+     "chain": 45
+    },
+    {
+     "id": null,
+     "label": "Alt",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 4,
+     "chain": 77
+    },
+    {
+     "id": null,
+     "label": "Fn",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 5,
+     "chain": 85
+    },
+    {
+     "id": null,
+     "label": "Ctrl",
+     "realLabel": "Ctrl_R",
+     "width": 67,
+     "row": 5,
+     "col": 6,
+     "chain": 101
+    },
+    {
+     "id": null,
+     "label": "←",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 7,
+     "chain": 109
+    },
+    {
+     "id": null,
+     "label": "↓",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 8,
+     "chain": 117
+    },
+    {
+     "id": null,
+     "label": "→",
+     "realLabel": null,
+     "width": 55,
+     "row": 5,
+     "col": 9,
+     "chain": 125
+    }
+   ]
+  }
+ ]
+}

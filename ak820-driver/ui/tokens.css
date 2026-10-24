@@ -1,0 +1,129 @@
+/* Design tokens for Keylight.
+ *
+ * The look we are copying is ATK GEAR: a light grey page, a slightly darker
+ * grey sidebar, white cards with a hairline border, and a grey block inside
+ * each card that holds the setting. Black is used for anything that is
+ * chosen. There is exactly one accent - the orange in the mark - and it is
+ * not used for selection.
+ *
+ * Segoe UI Variable is on every Windows 11 machine, so the app needs no
+ * web fonts and works offline. The weights are real weights on its axis
+ * rather than the coarse 400/600/700 steps.
+ */
+
+:root {
+  /* -- colour ---------------------------------------------------------- */
+  /* The page the cards sit on. */
+  --bg: #f4f4f5;
+  /* The sidebar. */
+  --sidebar: #f0f0f1;
+  /* A card. */
+  --surface: #ffffff;
+  /* The grey block inside a card that holds a setting. */
+  --surface-2: #f1f1f2;
+  /* A row inside a block. */
+  --surface-3: #f4f4f5;
+  /* The track under a segmented control. */
+  --track: #eeeef0;
+  /* Hairlines. */
+  --border: #ebebec;
+  --border-strong: #dcdcdf;
+  /* Text. */
+  --text: #17171a;
+  --text-dim: #7a7a7a;
+  --text-faint: #a5a5a5;
+  /* Anything that is chosen, and the primary button: black. */
+  --ink: #0a0a0a;
+  /* The text on top of it. */
+  --on-ink: #ffffff;
+  /* A wash of white for the hover states. */
+  --wash: rgba(255, 255, 255, 0.7);
+  --danger: #d93025;
+  --ok: #1a7f37;
+  /* The one accent: the mark. Nothing else is coloured. */
+  --accent: #f97316;
+  --accent-chip: #ffe6d8;
+
+  /* -- the board -------------------------------------------------------- */
+  /* The case, the keycaps and the legends on them. */
+  --board-case: #d2d2d7;
+  --cap-off: #ececf1;
+  --cap-edge: #c6c6cd;
+  --legend: #3c3c44;
+
+  /* -- spacing --------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* -- radius --------------------------------------------------------- */
+  --radius-1: 8px;
+  --radius-2: 10px;
+  --radius-3: 12px;
+  --radius-4: 16px;
+
+  /* -- type ------------------------------------------------------------ */
+  --font-text: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+
+  /* The name of the device, on its card. */
+  --text-device: 24px;
+  --weight-device: 500;
+  /* The title of a section. */
+  --text-section: 18px;
+  --weight-section: 500;
+  /* The title of a setting. */
+  --text-title: 16px;
+  --weight-title: 600;
+  /* A tab, a nav item, a button. */
+  --text-body: 14px;
+  --weight-body: 450;
+  /* The description under a title. */
+  --text-note: 13px;
+  --weight-note: 400;
+  /* The small label over a group. */
+  --text-label: 13px;
+  /* The wordmark. */
+  --text-mark: 13px;
+  --weight-mark: 700;
+
+  /* -- elevation (one level only) ---------------------------------------- */
+  --shadow-1: 0 1px 2px rgba(23, 23, 26, 0.06), 0 2px 8px rgba(23, 23, 26, 0.04);
+
+  /* -- motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-fast: 140ms;
+  --duration-base: 180ms;
+}
+
+/* The dark theme: the same shapes, the other way round. The chosen item is
+   white on a dark card, because black on a dark grey would disappear. */
+[data-theme="dark"] {
+  --bg: #17171a;
+  --sidebar: #121214;
+  --surface: #212125;
+  --surface-2: #2a2a2f;
+  --surface-3: #323238;
+  --track: #35353b;
+  --border: #303036;
+  --border-strong: #46464e;
+  --text: #f0f0f2;
+  --text-dim: #a3a3ab;
+  --text-faint: #71717a;
+  --ink: #f5f5f7;
+  --on-ink: #17171a;
+  --wash: rgba(255, 255, 255, 0.08);
+  --danger: #ff6b60;
+  --ok: #3fb950;
+  --accent-chip: #3a2418;
+  /* The board, the other way round. */
+  --board-case: #2a2a2f;
+  --cap-off: #3a3a41;
+  --cap-edge: #4c4c55;
+  --legend: #d6d6dc;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 10px rgba(0, 0, 0, 0.35);
+}

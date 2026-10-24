@@ -1,0 +1,26 @@
+[project]
+name = "keylight"
+version = "0.1.0"
+description = "Portable configurator for the AK820 keyboard"
+requires-python = ">=3.11"
+dependencies = [
+    "pywebview>=6.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8",
+]
+dev = [
+    "pytest>=8",
+    "pyinstaller>=6",
+    "frida>=17",
+    "playwright>=1.40",
+]
+
+[project.scripts]
+keylight = "ak820.app:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["hardware: needs the keyboard plugged in"]

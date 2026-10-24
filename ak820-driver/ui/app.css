@@ -1,0 +1,1773 @@
+/* The AK820 driver.
+ *
+ * Built to look like ATK GEAR: a light grey page, a grey sidebar, white
+ * cards on it, and a grey block inside each card that holds the setting.
+ * Black is for whatever is chosen. Built from the tokens in tokens.css only.
+ *
+ * The keyboard's own colour is the only saturated thing in the picture, and
+ * it is always data - never decoration.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The author rules below set `display` on these elements, which would
+   otherwise beat the browser's own rule for the `hidden` attribute. */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 228px 1fr;
+  grid-template-rows: 48px 1fr;
+  grid-template-areas:
+    "top  top"
+    "nav  canvas";
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-text);
+  font-size: var(--text-body);
+  font-weight: var(--weight-body);
+  font-optical-sizing: auto;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  background: var(--ink);
+  color: var(--on-ink);
+  border-radius: var(--radius-1);
+}
+
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-2);
+}
+
+/* -- top bar ------------------------------------------------------------ */
+
+.topbar {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+}
+
+.mark-image {
+  display: block;
+  width: auto;
+  height: 22px;
+}
+
+.wordmark {
+  font-size: var(--text-mark);
+  font-weight: var(--weight-mark);
+  font-variation-settings: "wght" var(--weight-mark);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.topbar-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+
+.topbar-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-1) 0 var(--space-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-1);
+  font-size: var(--text-body);
+  color: var(--text);
+}
+
+.topbar-tab-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.topbar-tab-dot.is-on {
+  background: var(--ok);
+  box-shadow: 0 0 0 1px rgba(26, 127, 55, 0.28);
+}
+
+.topbar-tab-x {
+  display: inline-flex;
+  color: var(--text-faint);
+}
+
+.topbar-tab-x svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.topbar-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.readout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.readout[hidden] {
+  display: none;
+}
+
+.readout-mode {
+  color: var(--text);
+  font-weight: 550;
+}
+
+.readout-chip {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-1);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.icon-button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.icon-button svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The theme button shows the theme it is in: the sun for the light one,
+   the moon for the dark one. */
+#theme-toggle .icon-moon {
+  display: none;
+}
+
+[data-theme="dark"] #theme-toggle .icon-sun {
+  display: none;
+}
+
+[data-theme="dark"] #theme-toggle .icon-moon {
+  display: block;
+}
+
+/* -- sidebar ------------------------------------------------------------ */
+
+.sidebar {
+  grid-area: nav;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3);
+  background: var(--sidebar);
+}
+
+/* The board, at the top of the column. */
+.group-label {
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  font-size: var(--text-label);
+  color: var(--text-faint);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 38px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-1);
+  color: var(--text-dim);
+  font-size: var(--text-body);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.nav-link:hover {
+  background: var(--wash);
+  color: var(--text);
+}
+
+/* The open page is a grey pill with a black bar down its left edge. */
+.nav-link[aria-current="page"] {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 550;
+}
+
+.nav-link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-3) * -1);
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 0 2px 2px 0;
+  background: var(--ink);
+}
+
+.nav-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+.nav-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-strong);
+}
+
+.device-meta {
+  font-size: var(--text-note);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- canvas ------------------------------------------------------------- */
+
+.canvas {
+  grid-area: canvas;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-5) var(--space-5) 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3);
+  font-size: var(--text-body);
+  color: var(--text);
+}
+
+.banner[hidden] {
+  display: none;
+}
+
+.canvas-inner {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  overflow-y: auto;
+}
+
+/* A section that has just been opened settles into place. It is a one-off,
+   so a keyframe is right, and it never plays on the first load. */
+.section-enter {
+  animation: section-in 300ms var(--ease-out) both;
+}
+
+@keyframes section-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.canvas-head {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.canvas-title {
+  font-family: var(--font-display);
+  font-size: var(--text-section);
+  font-weight: var(--weight-section);
+  font-variation-settings: "wght" var(--weight-section);
+  letter-spacing: -0.01em;
+}
+
+.canvas-note {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  text-align: right;
+  max-width: 46ch;
+}
+
+/* -- the workspace ------------------------------------------------------ */
+
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.board-col,
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The list of effects takes whatever height is left over, so the page
+   never has to scroll. The colour card keeps its own height: it holds a
+   fixed-size picker, and stretching it only leaves a gap. */
+.rail > .card:first-child:not(.colour-card) {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The short ones keep their own height and never squash. */
+.rail > .card:not(:first-child) {
+  flex: none;
+}
+
+.rail > .card:first-child .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  /* A card that is shorter than its contents scrolls them, rather than
+     cutting them off. Three of the five sections lost a control this way
+     at the default window size. */
+  overflow-y: auto;
+}
+
+/* The colour card lays its parts out side by side, even in the rail. */
+.rail > .card:first-child .colour-card .card-body,
+.colour-card .card-body {
+  flex-direction: row;
+}
+
+.colour-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+/* A card that takes the space it is given, so a list inside it can grow. */
+.card-fill {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-fill .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* -- a card ------------------------------------------------------------- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 14px var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.card-icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: var(--track);
+  border-radius: var(--radius-2);
+  color: var(--text);
+}
+
+.card-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-text {
+  min-width: 0;
+}
+
+.card-label {
+  font-size: var(--text-title);
+  font-weight: var(--weight-title);
+  font-variation-settings: "wght" var(--weight-title);
+  color: var(--text);
+}
+
+.card-note {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  margin-top: 1px;
+}
+
+.card-value {
+  margin-left: auto;
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.card-body {
+  padding: var(--space-4);
+  min-height: 0;
+}
+
+/* -- a setting: a grey block with the control beside it ------------------ */
+
+.setting {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-2);
+}
+
+/* A column of settings: each row is its own block, with space between them. */
+#app-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.setting-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--text);
+}
+
+.setting-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.setting-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.setting-title {
+  font-size: var(--text-body);
+  font-weight: 550;
+  color: var(--text);
+}
+
+.setting-note {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  margin-top: 1px;
+}
+
+.setting-control {
+  flex: 0 1 auto;
+  width: 200px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Every track in a column of settings is the same width, so the rows line
+   up with each other. */
+.setting-control .track {
+  width: 100%;
+}
+
+/* -- the board ---------------------------------------------------------- */
+
+.board-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  /* The picture is much wider than it is tall, so in a tall card there
+     is room above and below it. That room is the card's own padding,
+     not a grey panel with the keyboard floating in it. */
+  background: var(--surface);
+}
+
+/* The board is the vendor's own picture of the AK820: a grey case with the
+   keycaps lit green. The green is only a placeholder, so the live colour is
+   painted over it - the caps are the only saturated thing in the picture, so
+   the blend leaves the case grey and the legends keep their own shade. */
+.board {
+  position: relative;
+  flex: 1;
+  min-height: 120px;
+  width: 100%;
+  max-width: 1080px;
+  max-height: 100%;
+  margin: 0 auto;
+  isolation: isolate;
+}
+
+/* The board is drawn, not photographed: the case, the keycaps and the
+   legends are all this app's own work, so the colour on a key is the
+   colour of that key and the legends stay readable. */
+.board-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 16px rgba(23, 23, 26, 0.14));
+}
+
+.board-case {
+  fill: var(--board-case, #d2d2d7);
+}
+
+.board-cap {
+  fill: var(--cap-off, #ececf1);
+  stroke: var(--cap-edge, #c6c6cd);
+  stroke-width: 0.6;
+  transition: fill 160ms var(--ease-out);
+}
+
+.board-legend {
+  font-size: 10px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--legend, #3c3c44);
+  pointer-events: none;
+  user-select: none;
+}
+
+.board-legend.is-dark {
+  fill: #f4f4f7;
+}
+
+.board-knob {
+  fill: var(--board-case, #d2d2d7);
+  stroke: var(--cap-edge, #c6c6cd);
+  stroke-width: 0.75;
+}
+
+/* The light that crosses the board, and the shading on the top of the
+   keys. Both are kept to the keycaps, so the case stays still. */
+.board-wave {
+  opacity: 0;
+  mix-blend-mode: overlay;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.board-sheen {
+  pointer-events: none;
+}
+
+/* The click targets. They sit over the picture and are invisible until the
+   mouse is near them. */
+.board-keys {
+  position: absolute;
+  inset: 0;
+}
+
+.board-key {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+.board-key:hover {
+  background: rgba(10, 10, 10, 0.12);
+}
+
+.board-key.is-selected {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.board-key:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* The preview moves the way the board does, so what you see is what the
+   keyboard is doing. The travelling wave is a band of light that crosses
+   the keys; the breathing effects fade the whole board in and out; the
+   colour-cycling ones turn the hue round. */
+.board[data-motion="wave"] .board-wave,
+.board[data-motion="ripples"] .board-wave,
+.board[data-motion="traverse"] .board-wave,
+.board[data-motion="roll"] .board-wave,
+.board[data-motion="wave-bar"] .board-wave,
+.board[data-motion="cloud"] .board-wave,
+.board[data-motion="stars"] .board-wave {
+  opacity: 1;
+  animation: board-travel var(--anim-duration, 2s) linear infinite;
+}
+
+.board[data-motion="spectrum"] .board-caps,
+.board[data-motion="vortex"] .board-caps {
+  animation: board-hue var(--anim-duration, 4s) linear infinite;
+}
+
+.board[data-motion="breath"] .board-caps,
+.board[data-motion="speed"] .board-caps,
+.board[data-motion="rain"] .board-caps,
+.board[data-motion="fireworks"] .board-caps,
+.board[data-motion="cartoon"] .board-caps,
+.board[data-motion="scan"] .board-caps,
+.board[data-motion="surmount"] .board-caps,
+.board[data-motion="reaction"] .board-caps {
+  animation: board-pulse var(--anim-duration, 2.4s) var(--ease-in-out) infinite;
+}
+
+@keyframes board-travel {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes board-hue {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes board-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.deck-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-1) 0;
+  font-size: var(--text-note);
+  color: var(--text-dim);
+}
+
+/* -- a list of things: grey rows on the card ---------------------------- */
+
+.list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* The list takes the height it is given and scrolls inside it. A floor
+     on the height meant a list in a short card was taller than the card,
+     and the card cut it off instead of showing what was left. */
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-1);
+  scrollbar-gutter: stable;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  font: inherit;
+  font-size: var(--text-body);
+  color: var(--text);
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-1);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.list-row:hover {
+  background: var(--surface-3);
+}
+
+.list-row:active {
+  scale: 0.99;
+}
+
+.list-row[aria-checked="true"] {
+  background: var(--surface);
+  border-color: var(--ink);
+  font-weight: 550;
+}
+
+.list-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.list-row[aria-checked="true"] .list-dot {
+  background: var(--ink);
+}
+
+/* -- a segmented track: the chosen one is black --------------------------- */
+
+.track {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: var(--track);
+  border-radius: var(--radius-1);
+  max-width: 100%;
+}
+
+.track-option {
+  flex: 1 1 0;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out), scale var(--duration-fast) var(--ease-out);
+}
+
+.track-option:hover:not([aria-checked="true"]) {
+  color: var(--text);
+  background: var(--wash);
+}
+
+.track-option:active {
+  scale: 0.96;
+}
+
+.track-option[aria-checked="true"] {
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 550;
+}
+
+.track-option:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* -- the colour picker --------------------------------------------------- */
+
+/* The square and the hue bar are the picker's two halves; the hex sits under
+   the square so the whole thing reads as one control. The square keeps its
+   shape as the card grows and shrinks with the window. */
+/* The board card takes whatever height is left; the colour picker keeps its
+   own size so the colour is always easy to pick. */
+.board-card {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.colour-card {
+  flex: none;
+}
+.picker {
+  display: grid;
+  grid-template-columns: 208px 36px;
+  grid-template-rows: 208px auto auto;
+  column-gap: var(--space-3);
+  row-gap: var(--space-2);
+  flex: none;
+}
+
+.picker-square {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  /* The padding is where the handle hangs over the edge of the gradient
+     without being cut off. */
+  padding: 10px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.picker-gradient {
+  position: absolute;
+  inset: 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-1);
+  background:
+    linear-gradient(to top, #000, rgba(0, 0, 0, 0)),
+    linear-gradient(to right, #fff, hsl(var(--hue, 0), 100%, 50%));
+}
+.picker-marker {
+  position: absolute;
+  /* The centre of the marker travels across the whole gradient, so the pure
+     colours at the corners can be reached exactly. */
+  left: calc(var(--sat, 0) * 100%);
+  top: calc((1 - var(--val, 1)) * 100%);
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  /* The colour that is chosen, with a white ring and a thin dark edge, so it
+     can be seen on a light colour as well as on a dark one. */
+  background: var(--picker-colour, #ffffff);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px rgba(23, 23, 26, 0.55),
+    0 1px 3px rgba(23, 23, 26, 0.35);
+  pointer-events: none;
+  transition: left 60ms linear, top 60ms linear;
+}
+
+.picker-hue {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  /* The padding is where the handle hangs over the edge of the gradient
+     without being cut off. */
+  padding: 10px 8px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.picker-hue-gradient {
+  position: absolute;
+  left: 8px;
+  width: 20px;
+  top: 10px;
+  bottom: 10px;
+  border: 1px solid var(--border-strong);
+  /* Only a small rounding: a round end would put colour at the ends that
+     the handle's centre could never reach. */
+  border-radius: 2px;
+  /* The gradient is the picture of the strip; the border sits on top of it
+     rather than replacing it. */
+  background-color: transparent;
+  background-image: linear-gradient(to bottom,
+    #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
+
+.picker-hue-marker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* The centre of the handle travels across the whole strip, so 0 and 360
+     degrees can be reached exactly. */
+  top: calc(var(--hue, 0) * 100%);
+  transform: translateY(-50%);
+  height: 8px;
+  border-radius: 4px;
+  background: hsl(calc(var(--hue, 0) * 360), 100%, 50%);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(23, 23, 26, 0.4),
+    0 1px 3px rgba(23, 23, 26, 0.3);
+  pointer-events: none;
+}
+
+.picker-hex {
+  display: block;
+  grid-column: 1;
+  grid-row: 2;
+  /* The field lines up with the gradient above it, not with the padding
+     around it. */
+  padding: 0 10px;
+}
+
+.picker-hex input {
+  /* The field is as wide as the square above it and has the same rounding,
+     so the two look like one piece. */
+  width: 100%;
+
+  font: inherit;
+  font-size: var(--text-note);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  padding: 7px var(--space-2);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.picker-hex input:hover {
+  border-color: var(--border);
+}
+
+.picker-hex input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+/* The row under the picker: a random colour, and pinning the one that is
+   showing so it is always to hand. */
+.picker-actions {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) 10px 0;
+}
+
+.picker-action {
+  flex: 1;
+  font: inherit;
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  padding: 5px var(--space-2);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.picker-action:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.picker-action:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* -- the colour card ------------------------------------------------------ */
+
+.colour-body {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-5);
+}
+
+.colour-readout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding-top: var(--space-1);
+  text-align: left;
+}
+
+.colour-swatch {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-2);
+  background: var(--swatch, #000);
+  border: 1px solid var(--border-strong);
+  transition: background-color 200ms var(--ease-out);
+}
+
+.colour-rgb {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The colours the vendor's own app offers. */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--space-2);
+  margin-left: auto;
+  padding-top: var(--space-1);
+}
+
+/* The colours the user has pinned, on a row of their own. */
+.palette-favourites {
+  margin-left: 0;
+  width: 100%;
+  padding-top: var(--space-2);
+}
+
+.palette-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.palette-swatch:hover {
+  transform: scale(1.12);
+}
+
+.palette-swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink);
+}
+
+/* -- the new sections: profiles, settings and macros --------------------- */
+
+/* A list row can carry a name and a note under it. */
+.list-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.list-note {
+  font-size: var(--text-note);
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-row-static {
+  cursor: default;
+  background: transparent;
+}
+
+.list-row.is-active {
+  background: var(--surface);
+  border-color: var(--ink);
+}
+
+.list-empty {
+  font-size: var(--text-note);
+  color: var(--text-faint);
+  margin: 0 0 var(--space-3);
+}
+
+/* A folder the user can copy. */
+.path {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  background: var(--wash);
+  border-radius: var(--radius-1);
+  padding: var(--space-2) var(--space-3);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+/* A plain paragraph of explanation. */
+.note {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* The recorder, while a macro is being recorded. */
+.recorder {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.recorder-title {
+  font-size: var(--text-body);
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+
+.recorder-keys {
+  font-size: var(--text-note);
+  color: var(--text-dim);
+  margin: 0 0 var(--space-3);
+  min-height: 1.4em;
+}
+
+/* A switch that is the first thing in a card needs no rule above it. */
+.switch-row-first {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* A smaller board, for the pages that only show the keyboard to look at. */
+.board-small {
+  max-height: 190px;
+  margin-bottom: var(--space-3);
+}
+
+/* The settings page is a grid of cards, so the whole window is used. */
+.workspace-cards {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.workspace-cards > .card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.workspace-cards > .card > .card-body {
+  flex: 1;
+  min-height: 0;
+  /* The settings cards are half the height of the page each. When the
+     settings do not fit, they scroll rather than being cut off - the
+     "Reset the settings" button was out of reach. */
+  overflow-y: auto;
+}
+
+/* A card body that stacks its parts from top to bottom. */
+.card-body-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* The keyboard's picture beside its facts. */
+.keyboard-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.keyboard-facts {
+  flex: 1;
+  min-width: 0;
+}
+
+.keyboard-facts .facts {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* A button that does something that cannot be undone. */
+.button.button-danger {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+  background: transparent;
+}
+
+.button.button-danger:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border-color: var(--danger);
+}
+
+.button.button-danger:focus-visible {
+  outline-color: var(--danger);
+}
+
+/* The bottom of a card, where a button that acts on the whole card sits. */
+.card-foot {
+  margin-top: auto;
+  padding-top: var(--space-3);
+}
+
+/* A reset runs across the card it belongs to. */
+.card-foot .button {
+  width: 100%;
+  justify-content: center;
+}
+
+/* -- a row of fields: a label, a drop-down and a button ------------------- */
+
+.picker-row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1 1 130px;
+}
+
+.field-label {
+  font-size: var(--text-note);
+  color: var(--text-faint);
+}
+
+.field select {
+  appearance: none;
+  font: inherit;
+  font-size: var(--text-body);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  padding: 7px 26px 7px 10px;
+  min-width: 0;
+  width: 100%;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 12px center, right 7px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.field select:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* A number in a field, the same shape as the drop-downs beside it. */
+.field input {
+  font: inherit;
+  font-size: var(--text-body);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  padding: 7px 10px;
+  min-width: 0;
+  width: 100%;
+}
+
+.field input:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* A few facts about the keyboard, in two columns. */
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: var(--text-note);
+}
+
+.facts dt {
+  color: var(--text-faint);
+}
+
+.facts dd {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+/* -- a row of buttons ---------------------------------------------------- */
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+/* A row whose buttons share the width equally, so two rows of three sit
+   under each other with the same edges at every window size. */
+.button-row-even {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.button-row-even .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* -- a switch ----------------------------------------------------------- */
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.switch-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.switch {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 40px;
+  height: 23px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--track);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(23, 23, 26, 0.25);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.switch:checked {
+  background: var(--ink);
+}
+
+.switch:checked::after {
+  transform: translateX(17px);
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* -- buttons ------------------------------------------------------------- */
+
+.button {
+  font: inherit;
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-1);
+  padding: var(--space-2) var(--space-4);
+  min-height: 36px;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out), scale var(--duration-fast) var(--ease-out);
+}
+
+.button:hover {
+  background: var(--surface-3);
+}
+
+.button:active {
+  scale: 0.96;
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.button-primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+.button-primary:hover {
+  background: #26262a;
+}
+
+/* -- the toast ----------------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 5;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-note);
+  color: var(--on-ink);
+  background: var(--ink);
+  border-radius: var(--radius-1);
+  box-shadow: 0 6px 20px rgba(23, 23, 26, 0.22);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.toast.is-shown {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.is-error {
+  background: var(--danger);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* -- a section that is not built yet -------------------------------------- */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3);
+  text-align: center;
+}
+
+.empty-title {
+  font-size: var(--text-body);
+  color: var(--text);
+}
+
+/* -- too narrow ---------------------------------------------------------- */
+
+.too-small {
+  grid-area: canvas;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.too-small-title {
+  font-size: var(--text-title);
+  font-weight: var(--weight-title);
+}
+
+.too-small-text {
+  max-width: 44ch;
+  color: var(--text-dim);
+  font-size: var(--text-note);
+}
+
+/* A shorter window gives the board more of the column and the picker less. */
+@media (max-height: 940px) {
+  .picker {
+    grid-template-columns: 186px 36px;
+    grid-template-rows: 186px;
+  }
+}
+
+@media (max-height: 830px) {
+  .picker {
+    grid-template-columns: 156px 36px;
+    grid-template-rows: 156px;
+  }
+
+  .palette {
+    gap: 6px;
+  }
+
+  .palette-swatch {
+    width: 26px;
+    height: 26px;
+  }
+
+  .colour-swatch {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media (max-width: 1320px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr) 400px;
+  }
+
+  /* A narrow rail needs room for the words on a segmented control: at
+     170 pixels the two directions did not fit on one line and wrapped,
+     and the control took two rows of the card. */
+  .setting-control {
+    width: 200px;
+  }
+
+  /* A narrow rail gets three columns of effects, so more of them are in
+     sight without scrolling. */
+  .rail .list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+  }
+}
+
+@media (max-width: 1120px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    grid-auto-rows: min-content;
+  }
+
+  .rail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  /* The list of effects is the tall one, so it gets the whole width here. */
+  .rail > .card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .rail .list {
+    flex: none;
+    max-height: 280px;
+  }
+
+  /* Stacked, the cards keep their own height and the page scrolls. */
+  .board-card,
+  .colour-card {
+    flex: none;
+  }
+
+  .board {
+    flex: none;
+    height: 260px;
+  }
+}
+
+@media (max-width: 900px) {
+  body {
+    grid-template-columns: 196px 1fr;
+  }
+
+  .rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    grid-template-columns: 0 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .canvas-inner,
+  .banner {
+    display: none;
+  }
+
+  .too-small {
+    display: flex;
+  }
+}
+
+/* -- scrollbars ---------------------------------------------------------- */
+
+.list::-webkit-scrollbar,
+.canvas-inner::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.list::-webkit-scrollbar-track,
+.canvas-inner::-webkit-scrollbar-track,
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list::-webkit-scrollbar-thumb,
+.canvas-inner::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb {
+  background: #cfcfd4;
+  border-radius: 5px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+.list::-webkit-scrollbar-thumb:hover,
+.canvas-inner::-webkit-scrollbar-thumb:hover,
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #b4b4bb;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+/* -- reduced motion ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
