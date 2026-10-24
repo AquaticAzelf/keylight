@@ -54,15 +54,19 @@ Next to the app, in a `profiles` folder and a `macros` folder, and a
 go to `%APPDATA%\Keylight` instead. The app shows you where they are, under
 **Settings**.
 
-## Building the one-file executable
+## Building the portable folder
 
 ```powershell
 cd ak820-driver
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-The result is `dist\Keylight.exe`. It needs the WebView2 runtime, which is on
-every Windows 11 machine and on Windows 10 where it has been installed.
+The result is `dist\Keylight\` — a folder with `Keylight.exe` and the parts
+it needs beside it. Nothing is unpacked to the temp folder at start, and
+everything the app writes stays in that folder, so it can be copied to a USB
+stick and run from there. It needs the WebView2 runtime, which is on
+every Windows 11 machine and on Windows 10 where it has been installed;
+without it, the app opens in Edge app mode instead.
 
 ## How the keyboard was worked out
 

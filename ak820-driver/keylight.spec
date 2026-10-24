@@ -1,10 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""How Keylight is packed into one file.
+"""How Keylight is packed into one portable folder.
 
     pyinstaller --clean --noconfirm keylight.spec
 
+The result is ``dist/Keylight/`` - ``Keylight.exe`` beside an
+``_internal`` folder. Nothing is extracted to the temp folder at start,
+and every file the app writes (profiles, macros, settings, the log) goes
+into the same folder as the exe, so the folder can be copied to a USB
+stick and taken anywhere.
+
 The front end is not a Python file, so it goes in as data and the server
-finds it in the folder the packer unpacks into. The window toolkit
+finds it in the folder the packer puts it in. The window toolkit
 (``pywebview``) reaches the Edge WebView2 runtime through a back end
 that PyInstaller cannot see on its own, so it is named here.
 """
@@ -47,9 +53,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name="Keylight",
     debug=False,
     bootloader_ignore_signals=False,
@@ -63,4 +68,14 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name="Keylight",
 )

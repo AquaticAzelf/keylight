@@ -1,11 +1,14 @@
 <#
 .SYNOPSIS
-    Build Keylight into one file.
+    Build Keylight into one portable folder.
 
 .DESCRIPTION
     Runs PyInstaller over keylight.spec and leaves the app in
-    dist\Keylight\Keylight.exe. The folder beside it holds nothing the
-    app needs: the front end is inside the file.
+    dist\Keylight\: Keylight.exe beside the _internal folder it needs.
+    The folder is the app: copy it anywhere (a USB stick included) and
+    run Keylight.exe. Everything the app writes - profiles, macros,
+    settings, the log - lands in that same folder, so deleting it
+    deletes the whole app.
 
     The build needs a virtual environment with the app's requirements
     in it. If there is no .venv here, one is made and the requirements
@@ -49,27 +52,30 @@ try {
         throw 'The build failed.'
     }
 
-    $exe = Join-Path $here 'dist\Keylight.exe'
+    $app = Join-Path $here 'dist\Keylight'
+    $exe = Join-Path $app 'Keylight.exe'
     if (-not (Test-Path $exe)) {
         throw "The build finished but $exe is not there."
     }
 
-    $size = [math]::Round((Get-Item $exe).Length / 1MB, 1)
-
-    # A zip to hand to someone. It holds the one file and a short guide.
-    $zip = Join-Path $here 'dist\Keylight.zip'
-    if (Test-Path $zip) { Remove-Item -Force $zip }
-    Compress-Archive -Path $exe -DestinationPath $zip
+    # The guide travels inside the folder, next to the exe.
     $guide = Join-Path $here '..\docs\user-guide.md'
     if (Test-Path $guide) {
-        Compress-Archive -Path $guide -DestinationPath $zip -Update
+        Copy-Item $guide (Join-Path $app 'user-guide.md') -Force
     }
+
+    # A zip to hand to someone. Unzipping it gives one Keylight folder.
+    $zip = Join-Path $here 'dist\Keylight.zip'
+    if (Test-Path $zip) { Remove-Item -Force $zip }
+    Compress-Archive -Path $app -DestinationPath $zip
+
+    $size = [math]::Round((Get-ChildItem $app -Recurse -File | Measure-Object Length -Sum).Sum / 1MB, 1)
 
     Write-Host ''
     Write-Host 'Keylight is built.'
-    Write-Host "  $exe  ($size MB)"
-    Write-Host "  $zip  (the exe and the guide, zipped)"
-    Write-Host 'Unzip the zip on another computer and run Keylight.exe.'
+    Write-Host "  $app  ($size MB, the portable folder)"
+    Write-Host "  $zip  (the same folder, zipped)"
+    Write-Host 'Copy the folder anywhere and run Keylight.exe.'
 }
 finally {
     Pop-Location
