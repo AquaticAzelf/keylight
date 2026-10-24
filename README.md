@@ -11,6 +11,8 @@ lighting profiles of your own.
 keyboard that AJAZZ sells. "AK820" is used here only to say which keyboard it
 works with.
 
+![Keylight with the lighting section open](docs/demo.png)
+
 ## What it does
 
 | Section | What it is for |
