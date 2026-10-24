@@ -24,3 +24,9 @@ keylight = "ak820.app:main"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = ["hardware: needs the keyboard plugged in"]
+
+# The ui folder holds the front end (html/js/css), not an importable
+# package; without this, pip's auto-discovery sees two top-level packages
+# and refuses to build.
+[tool.setuptools.packages.find]
+include = ["ak820*"]
