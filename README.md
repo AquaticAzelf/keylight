@@ -31,13 +31,27 @@ works with.
 - **No firmware updates.** Flashing a keyboard is not something a small tool
   should be able to do by accident.
 
-## Running it
+## Install once (only for running from source)
 
-Needs Windows 10 or later and Python 3.11 or later (tested on 3.14).
+Needs Windows 10 or later and Python 3.11 or later (tested on 3.14). From
+PowerShell, in the repository root:
 
 ```powershell
 cd ak820-driver
-.venv\Scripts\python.exe -m ak820.app
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+```
+
+This installs the app and the test tools into a local `.venv` folder, which is
+git-ignored. Nothing is installed system-wide.
+
+**If you downloaded the portable `Keylight.zip` from the releases page, skip
+this section entirely** — that build needs no Python and no installation.
+
+## Running it
+
+```powershell
+.\.venv\Scripts\python.exe -m ak820.app
 ```
 
 The app opens a window on `http://127.0.0.1:8731` and serves it to itself.
@@ -46,7 +60,7 @@ Nothing else can reach that address.
 To run the tests:
 
 ```powershell
-.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
 ## Where it keeps your files
@@ -79,6 +93,11 @@ measured on the hardware or read out of the official driver. The working
 notes from that investigation are under
 [docs/superpowers/plans/](docs/superpowers/plans/); the vendor files they
 reference were never part of this repository.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, how to run
+the test suite, and how to report findings about the keyboard's protocol.
 
 ## Licence
 
