@@ -60,7 +60,7 @@ Nothing else can reach that address.
 To run the tests:
 
 ```powershell
-.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
 ## Where it keeps your files
